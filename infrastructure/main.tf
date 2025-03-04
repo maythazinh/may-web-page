@@ -4,7 +4,7 @@
 # }
 
 resource "aws_s3_bucket_website_configuration" "website" {
-  bucket = aws_s3_bucket.website.id
+  bucket = "may-web-page"
 
   index_document {
     suffix = "May-cv-sakura.html"
