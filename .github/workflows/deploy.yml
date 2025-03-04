@@ -11,11 +11,11 @@ jobs:
   deploy:
     runs-on: ubuntu-latest
     steps:
-      - name: Force Unlock Terraform State
-        run: |
-          cd infrastructure
-          terraform force-unlock 8208949b-bfda-bed4-fb23-1f660ed60122
-        continue-on-error: true
+      # - name: Force Unlock Terraform State
+      #   run: |
+      #     cd infrastructure
+      #     terraform force-unlock 8208949b-bfda-bed4-fb23-1f660ed60122
+      #   continue-on-error: true
 
       - name: Checkout code
         uses: actions/checkout@v3
