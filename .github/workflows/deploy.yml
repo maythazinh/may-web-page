@@ -9,29 +9,38 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v3
       
-      - name: Configure AWS credentials for Terraform
-        uses: aws-actions/configure-aws-credentials@v1
-        with:
-          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
-          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-          aws-region: us-east-1
-          profile-name: web-purpose-admin
-      
       - name: Setup Terraform
         uses: hashicorp/setup-terraform@v2
         
+      - name: Update Terraform backend config
+        run: |
+          cd infrastructure
+          # Remove profile from backend config
+          sed -i 's/profile = "web-static-user"//' *.tf
+          
       - name: Terraform Init
+        env:
+          AWS_ACCESS_KEY_ID: ${{ secrets.S3_AWS_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.S3_AWS_SECRET_ACCESS_KEY }}
+          AWS_REGION: us-east-1
         run: cd infrastructure && terraform init
         
-      - name: Terraform Apply
-        run: cd infrastructure && terraform apply -auto-approve
-      
-      - name: Configure AWS credentials for S3 deployment
-        uses: aws-actions/configure-aws-credentials@v1
-        with:
-          aws-access-key-id: ${{ secrets.S3_AWS_ACCESS_KEY_ID }}
-          aws-secret-access-key: ${{ secrets.S3_AWS_SECRET_ACCESS_KEY }}
-          aws-region: us-east-1
+      - name: Update Terraform provider config
+        run: |
+          cd infrastructure
+          # Remove profile from provider config
+          sed -i 's/profile = "web-purpose-admin"//' *.tf
           
+      - name: Terraform Apply
+        env:
+          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          AWS_REGION: us-east-1
+        run: cd infrastructure && terraform apply -auto-approve
+        
       - name: Deploy website content
+        env:
+          AWS_ACCESS_KEY_ID: ${{ secrets.S3_AWS_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.S3_AWS_SECRET_ACCESS_KEY }}
+          AWS_REGION: us-east-1
         run: aws s3 sync ./website s3://may-web-page
