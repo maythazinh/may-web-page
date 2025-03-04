@@ -2,10 +2,21 @@ name: Deploy Website
 on:
   push:
     branches: [main]
+
+concurrency:
+  group: terraform-${{ github.ref }}
+  cancel-in-progress: false
+
 jobs:
   deploy:
     runs-on: ubuntu-latest
     steps:
+      - name: Force Unlock Terraform State
+        run: |
+          cd infrastructure
+          terraform force-unlock 8208949b-bfda-bed4-fb23-1f660ed60122
+        continue-on-error: true
+
       - name: Checkout code
         uses: actions/checkout@v3
       
@@ -43,4 +54,4 @@ jobs:
           AWS_ACCESS_KEY_ID: ${{ secrets.S3_AWS_ACCESS_KEY_ID }}
           AWS_SECRET_ACCESS_KEY: ${{ secrets.S3_AWS_SECRET_ACCESS_KEY }}
           AWS_REGION: us-east-1
-        run: aws s3 sync ./website s3://may-web-page
+        run: aws s3 sync ./website s3://may-web-page --delete
