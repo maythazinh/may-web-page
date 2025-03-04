@@ -1,10 +1,11 @@
 variable "bucket_name" {
-  description = "may-web-page"
+  description = "the name of the S3 bucke"
   type        = string
+  default = "may-web-page"
 }
 
 variable "tags" {
-  description = "may-cv"
+  description = "Tags for the S3 bucket"
   type        = map(string)
   default     = {
     Name        = "Static Website"
