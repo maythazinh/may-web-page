@@ -4,51 +4,51 @@
 # }
 
 resource "aws_s3_bucket_website_configuration" "website" {
-  bucket = "may-web-page"
+  bucket = "www.maythazin.life"
 
   index_document {
-    suffix = "May-cv-sakura.html"
+    suffix = "index.html"
   }
 
   error_document {
-    key = "error.html"
+    key = "index.html"
   }
 }
 
 
 
-# Create a VPC
-resource "aws_vpc" "tf-vcs-workflow" {
-  cidr_block = "10.10.0.0/16"
-  tags = {
-    Name = "terraform-vpc"
-  }
+# # Create a VPC
+# resource "aws_vpc" "tf-vcs-workflow" {
+#   cidr_block = "10.10.0.0/16"
+#   tags = {
+#     Name = "terraform-vpc"
+#   }
+# }
+
+
+resource "aws_s3_bucket_public_access_block" "website" {
+  bucket = "www.maythazin.life"
+
+  block_public_acls       = false
+  block_public_policy     = false
+  ignore_public_acls      = false
+  restrict_public_buckets = false
 }
 
+resource "aws_s3_bucket_policy" "website" {
+  bucket = "www.maythazin.life"
 
-# resource "aws_s3_bucket_public_access_block" "website" {
-#   bucket = aws_s3_bucket.website.id
+  policy = jsonencode({
+    Version = "2012-10-17"
+    Statement = [
+      {
+        Effect    = "Allow"
+        Principal = "*"
+        Action    = "s3:GetObject"
+        Resource  = "arn:aws:s3:::www.maythazin.life/*"
+      }
+    ]
+  })
 
-#   block_public_acls       = false
-#   block_public_policy     = false
-#   ignore_public_acls      = false
-#   restrict_public_buckets = false
-# }
-
-# resource "aws_s3_bucket_policy" "website" {
-#   bucket = aws_s3_bucket.website.id
-
-#   policy = jsonencode({
-#     Version = "2012-10-17"
-#     Statement = [
-#       {
-#         Effect    = "Allow"
-#         Principal = "*"
-#         Action    = "s3:GetObject"
-#         Resource  = "${aws_s3_bucket.website.arn}/*"
-#       }
-#     ]
-#   })
-
-#   depends_on = [aws_s3_bucket_public_access_block.website]
-# }
+  depends_on = [aws_s3_bucket_public_access_block.website]
+}
