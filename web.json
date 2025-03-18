@@ -5,7 +5,7 @@
 			"Sid": "AllowListBucketForWebsite",
 			"Effect": "Allow",
 			"Action": "s3:ListBucket",
-			"Resource": "arn:aws:s3:::may-web-page",
+			"Resource": "arn:aws:s3:::www.maythazin.life",
 			"Condition": {
 				"StringLike": {
 					"s3:prefix": "website/*"
@@ -20,7 +20,7 @@
 				"s3:PutObject",
 				"s3:DeleteObject"
 			],
-			"Resource": "arn:aws:s3:::may-web-page/*"
+			"Resource": "arn:aws:s3:::www.maythazin.life/*"
 		},
 		{
 			"Sid": "AllowTerraformLockFile",
@@ -30,7 +30,7 @@
 				"s3:PutObject",
 				"s3:DeleteObject"
 			],
-			"Resource": "arn:aws:s3:::may-web-page/website/terraform.tfstate.tflock"
+			"Resource": "arn:aws:s3:::www.maythazin.life/terraform.tfstate.tflock"
 		}
 	]
 }
