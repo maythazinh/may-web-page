@@ -18,12 +18,12 @@ resource "aws_s3_bucket_website_configuration" "website" {
 
 
 # # Create a VPC
-# resource "aws_vpc" "tf-vcs-workflow" {
-#   cidr_block = "10.10.0.0/16"
-#   tags = {
-#     Name = "terraform-vpc"
-#   }
-# }
+resource "aws_vpc" "tf-vcs-workflow" {
+  cidr_block = "10.10.0.0/16"
+  tags = {
+    Name = "may-vpc"
+  }
+}
 
 
 resource "aws_s3_bucket_public_access_block" "website" {
